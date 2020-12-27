@@ -1,0 +1,63 @@
+#include "d3m.hsp"
+//音楽読み込み
+mmload "01-with_U.mp3"
+mmload "don.wav", 1,0
+mmload "ka.wav", 2,0
+//音楽再生
+mmplay 0
+//実行開始時間
+start=d3timer()
+//譜面作成
+notesel fumen
+repeat 
+//裏の動作は表示しない
+redraw 0
+color 255,255,255
+boxf
+color 0,0,0
+pos 10,10
+mes d3timer()-start
+mes "譜面作成中"
+mes "Escで譜面保存"
+
+//連続で取得しないため
+old_d=d
+//キーボードからdを取得
+getkey d, 'D'
+if (d&&(old_d==0)){
+	mmplay 1
+	noteadd strf("%d,d",d3timer()-start)
+}
+//連続で取得しないため
+old_k=k
+//キーボードからkを取得
+getkey k, 'K'
+if (k&&(old_k==0)){
+	mmplay 2
+	noteadd strf("%d,k",d3timer()-start)
+}
+
+//Escで譜面保存
+getkey esc,27
+if (esc){
+	notesave "withU.txt"
+}
+
+redraw 1
+await 16
+loop
+
+/*
+秒, d
+秒, D
+秒, k
+秒, K
+-----
+秒, r.継続秒数
+秒, R.継続秒数
+秒, f.継続秒数, 連打数
+秒, s.継続秒数, 連打数
+*/
+
+
+

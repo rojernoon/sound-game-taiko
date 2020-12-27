@@ -1,0 +1,102 @@
+#include "d3m.hsp"
+#module
+
+//ŠÖ”
+#deffunc note_init local note
+screen 0,1280,720
+//•ˆ–Ê“Ç‚İ‚İ
+notesel fumen
+noteload "withU.csv"
+dim note_times,notemax
+sdim note_data,2,notemax
+repeat notemax
+noteget note, cnt
+split note, ",",div
+note_times(cnt)=int(div(0))
+note_data(cnt)=div(1)
+loop
+return
+
+#deffunc nextnote
+nowline++
+return
+
+#defcfunc nextnote_time
+return note_times(nowline)
+
+#defcfunc nextnote_data
+return note_data(nowline)
+
+#deffunc draw int now_time
+redraw 0
+color 255,255,255
+boxf
+color 0,0,0
+line 0,360-80,1280,360-80
+line 0,360+80,1280,360+80
+circle 150-80,360-80,150+80,360+80,0
+circle 150-50,360-50,150+50,360+50,0
+
+//ƒm[ƒg‚ğ•`‚­
+for i,nowline,length(note_data)
+	x=(note_times(i)-now_time)/2+150
+	y=360
+	if(note_data(i)=="d"){
+		color 255,0,0
+	}else{
+		color 128,128,255
+	}
+	circle x-50,y-50,x+50,y+50
+	color 0,0,0
+	circle x-50,y-50,x+50,y+50,0
+	
+next
+redraw 1
+return
+
+#global
+
+//‰¹Šy“Ç‚İ‚İ
+mmload "01-with_U.mp3"
+mmload "don.wav", 1,0
+mmload "ka.wav", 2,0
+//‰¹ŠyÄ¶
+mmplay 0
+//ÀsŠJnŠÔ
+start=d3timer()
+
+
+//ƒm[ƒg‚Ìæ“¾
+note_init
+
+
+repeat
+draw d3timer()-start
+if (nextnote_time()<=d3timer()-start){
+	if (nextnote_data()=="d"){
+		mmplay 1
+	}
+	if (nextnote_data()=="k"){
+		mmplay 2
+	}
+	//Ÿ‚Ìƒm[ƒg‚ğ“Ç‚Ş
+	nextnote
+}
+
+await 16
+loop
+
+/*
+•b, d
+•b, D
+•b, k
+•b, K
+-----
+•b, r.Œp‘±•b”
+•b, R.Œp‘±•b”
+•b, f.Œp‘±•b”, ˜A‘Å”
+•b, s.Œp‘±•b”, ˜A‘Å”
+*/
+
+
+

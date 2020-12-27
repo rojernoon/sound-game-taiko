@@ -1,0 +1,137 @@
+#include "d3m.hsp"
+#module
+
+#deffunc note_init local note
+screen 0,1280,720
+//•ˆ–Ê“Ç‚Ýž‚Ý
+notesel fumen
+noteload "withU.csv"
+dim note_times,notemax
+sdim note_data,2,notemax
+repeat notemax
+noteget note, cnt
+split note, ",",div
+note_times(cnt)=int(div(0))
+note_data(cnt)=div(1)
+loop
+return
+
+#deffunc nextnote
+nowline++
+return
+
+#defcfunc nextnote_time
+return note_times(nowline)
+
+#defcfunc nextnote_data
+return note_data(nowline)
+
+#deffunc draw int now_time
+redraw 0
+color 255,255,255
+boxf
+color 0,0,0
+line 0,360-80,1280,360-80
+line 0,360+80,1280,360+80
+circle 150-80,360-80,150+80,360+80,0
+circle 150-50,360-50,150+50,360+50,0
+
+//ƒm[ƒg‚ð•`‚­
+for i,nowline,length(note_data)
+	x=(note_times(i)-now_time)/2+150
+	y=360
+	if(note_data(i)=="d"){
+		color 255,0,0
+	}else{
+		color 128,128,255
+	}
+	circle x-50,y-50,x+50,y+50
+	color 0,0,0
+	circle x-50,y-50,x+50,y+50,0
+	
+next
+//“¾“_‚ð•`‚­
+font msgothic,36
+pos 1000,50
+mes strf("—Ç@:%4d",great)
+mes strf("‰Â@:%4d",good)
+mes strf("•s‰Â:%4d",miss)
+redraw 1
+return
+
+#deffunc hantei int now_time, str key
+//250ms‚æ‚è‚àæ‚Ìƒm[ƒg‚ªŽŸ‚Ìƒm[ƒg‚È‚ç–³Ž‹
+if (nextnote_time()>=now_time+250){
+	return
+}
+if(key==nextnote_data()){
+	if (abs(nextnote_time()-now_time)<=50){
+		great++
+		nextnote
+	}else{
+		good++
+		nextnote
+	}
+}else:if(key=="miss"){
+		miss++
+		nextnote
+		logmes strf("%d,%d,%s",nextnote_time(),now_time,key)
+}
+return
+
+#global
+
+//‰¹Šy“Ç‚Ýž‚Ý
+mmload "01-with_U.mp3"
+mmload "don.wav", 1,0
+mmload "ka.wav", 2,0
+//‰¹ŠyÄ¶
+mmplay 0
+//ŽÀsŠJŽnŽžŠÔ
+start=d3timer()
+
+
+//ƒm[ƒg‚ÌŽæ“¾
+note_init
+
+repeat
+draw d3timer()-start
+
+if (nextnote_time()<=d3timer()-start-250){
+	hantei d3timer()-start,"miss"
+}
+
+//˜A‘±‚ÅŽæ“¾‚µ‚È‚¢‚½‚ß
+old_d=d
+//ƒL[ƒ{[ƒh‚©‚çd‚ðŽæ“¾
+getkey d, 'D'
+if (d&&(old_d==0)){
+	mmplay 1
+	hantei d3timer()-start,"d"
+}
+//˜A‘±‚ÅŽæ“¾‚µ‚È‚¢‚½‚ß
+old_k=k
+//ƒL[ƒ{[ƒh‚©‚çk‚ðŽæ“¾
+getkey k, 'K'
+if (k&&(old_k==0)){
+	mmplay 2
+	hantei d3timer()-start,"k"
+}
+
+await 1
+loop
+
+/*
+•b, d
+•b, D
+•b, k
+•b, K
+-----
+•b, r.Œp‘±•b”
+•b, R.Œp‘±•b”
+•b, f.Œp‘±•b”, ˜A‘Å”
+•b, s.Œp‘±•b”, ˜A‘Å”
+*/
+
+
+

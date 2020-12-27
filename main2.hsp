@@ -1,0 +1,61 @@
+#include "d3m.hsp"
+#module
+
+//ŠÖ”
+#deffunc nextnote local note
+noteget note, nowline
+split note, ",",div
+nextnote_time@=int(div(0))
+nextnote_note@=div(1)
+nowline++
+return
+
+#global
+
+//‰¹Šy“Ç‚İ‚İ
+mmload "01-with_U.mp3"
+mmload "don.wav", 1,0
+mmload "ka.wav", 2,0
+//‰¹ŠyÄ¶
+mmplay 0
+//ÀsŠJnŠÔ
+start=d3timer()
+//•ˆ–Ê“Ç‚İ‚İ
+notesel fumen
+noteload "withU.csv"
+
+//ƒm[ƒg‚Ìæ“¾
+nextnote 
+
+repeat
+pos 10,10
+mes "“š‚¦Ä¶"
+redraw 0
+if (nextnote_time<=d3timer()-start){
+	if (nextnote_note=="d"){
+		mmplay 1
+	}
+	if (nextnote_note=="k"){
+		mmplay 2
+	}
+	//Ÿ‚Ìƒm[ƒg‚ğ“Ç‚Ş
+	nextnote
+}
+redraw 1
+await 16
+loop
+
+/*
+•b, d
+•b, D
+•b, k
+•b, K
+-----
+•b, r.Œp‘±•b”
+•b, R.Œp‘±•b”
+•b, f.Œp‘±•b”, ˜A‘Å”
+•b, s.Œp‘±•b”, ˜A‘Å”
+*/
+
+
+
